@@ -1,0 +1,489 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>عشاق الافلام</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0a0c10;
+            color: #eef2ff;
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px 30px;
+            width: 100%;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 15px;
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to left, #f5f7fe, #cbd5ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: inline-block;
+        }
+        .page-title h1:hover {
+            opacity: 0.8;
+        }
+
+        .page-title p {
+            color: #8f9bb3;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .search-box {
+            background: #1a1e2a;
+            padding: 8px 18px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #2d3345;
+        }
+
+        .search-box i {
+            color: #ff9f4a;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #eef2ff;
+            font-family: 'Cairo', sans-serif;
+            width: 220px;
+        }
+
+        .search-box input::placeholder {
+            color: #6a6f86;
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 22px;
+            margin-top: 20px;
+        }
+
+        .anime-card {
+            background: #141824;
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 140, 66, 0.4);
+            box-shadow: 0 22px 28px -14px rgba(0, 0, 0, 0.6);
+            background: #1b212e;
+        }
+
+        .card-img {
+            position: relative;
+            width: 100%;
+            padding-top: 130%;
+            overflow: hidden;
+            background: #0b0e16;
+        }
+
+        .card-img img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .anime-card:hover .card-img img {
+            transform: scale(1.05);
+        }
+
+        .card-info {
+            padding: 14px 8px 12px;
+            text-align: center;
+        }
+
+        .card-info h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #f0f3ff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 6px;
+        }
+
+        .badge {
+            background: rgba(255, 140, 66, 0.2);
+            color: #ffb347;
+            font-size: 0.65rem;
+            padding: 4px 8px;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .play-hint {
+            opacity: 0;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff8c42e6;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            transition: 0.2s;
+            pointer-events: none;
+            color: #0a0c10;
+        }
+
+        .anime-card:hover .play-hint {
+            opacity: 1;
+        }
+
+        .footer-note {
+            margin-top: 50px;
+            text-align: center;
+            color: #5a6b8c;
+            font-size: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 25px;
+        }
+
+        /* الهواتف: 4 بطاقات في السطر */
+        @media (max-width: 780px) {
+            .main-content {
+                padding: 20px 12px;
+            }
+            .anime-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+            }
+            .card-info h3 {
+                font-size: 0.7rem;
+            }
+            .badge {
+                font-size: 0.55rem;
+                padding: 2px 6px;
+            }
+            .play-hint {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
+            .page-title h1 {
+                font-size: 1.4rem;
+            }
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box input {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .anime-grid {
+                gap: 8px;
+            }
+            .card-info {
+                padding: 8px 4px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-content">
+    <div class="top-bar">
+        <div class="page-title">
+            <h1 id="homeLink"><i class="fas fa-crown" style="color:#FFB347; font-size: 1.5rem;"></i> تحميل المشغل APK </h1>
+            <p>استمتع بمشاهدة أشهر الافلام الاجنبية والانميشن القديمة والحديثة </p>
+        </div>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="ابحث عن فلم او اسم ممثل...">
+        </div>
+    </div>
+
+    <div id="animeGridContainer" class="anime-grid"></div>
+    <div class="footer-note">
+        <i class="fas fa-globe"></i> أكثر من 600 عنوان بجودة عالية |   مجهود شخصي | Telegram:mustafaa90
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // بيانات الأنمي الكاملة (لضمان الحفاظ على جميع العناوين)
+    // --------------------------------------------------------------
+    const animeItems = [
+    { name: "Thrash (2026) قرش رعب", img: "https://i.ibb.co/m5rF6qpd/Thrash-2026.jpg", link: "https://www.linkbox.to/a/f/HbJMTIA?d=true" }, 
+{ name: "War Machine (2026)الان ريتشسون", img: "https://i.ibb.co/k29ptc2j/War-Machine-2026.jpg", link: "https://www.linkbox.to/a/f/aiWaXn6?d=true" }, 
+{ name: "Solo Mio (2026)كيفن جيمس", img: "https://i.ibb.co/5Xv1VVrd/Solo-Mio-2026.jpg", link: "https://www.linkbox.to/a/f/ZfzKwn4?d=true" },
+        { name: "Avatar Fire and Ash (2025)افتار", img: "https://i.ibb.co/C3WFNKMH/Avatar-Fire-and-Ash-2025.jpg", link: "https://www.linkbox.to/a/f/3AmfzgT?d=true" },   
+        { name: "Shelter (2026)جيسون ستاثام ", img: "https://i.ibb.co/4nJxvgY2/Shelter-2026.jpg", link: "https://www.linkbox.to/a/f/MZgkeHy?d=true" },
+        { name: "Peaky Blinders The Immortal Man (2026)كيليان مورفي ", img: "https://i.ibb.co/bM8TthwB/Peaky-Blinders-The-Immortal-Man-2026.jpg", link: "https://www.linkbox.to/a/f/CTywjyt?d=true" },
+        { name: "Scream 7 (2026) الصرخة ", img: "https://i.ibb.co/DfvqK2wS/Scream-7-2026.jpg", link: "https://www.linkbox.to/a/f/OcTM4c0?d=true" },
+        { name: "Frankenstein (2025) فرانكشتاين", img: "https://i.ibb.co/GfWSvBhy/Frankenstein-2025.jpg", link: "https://www.linkbox.to/a/f/R7A8P4Y?d=true" },
+        { name: "One Battle After Another (2025)ليوناردو دي كابريو", img: "https://i.ibb.co/Kz8KPDbZ/One-Battle-After-Another-2025.jpg", link: "https://www.linkbox.to/a/f/5DlmCTd?d=true" },
+        { name: "Mercy (2026)كريس برات", img: "https://i.ibb.co/qVtcSmh/Mercy-2026.jpg", link: "https://www.linkbox.to/a/f/GXtQbCu?d=true" },
+        { name: "Hunting Season (2025)ميل جيبسون", img: "https://i.ibb.co/8D5Fqwdn/Hunting-Season-2025.jpg", link: "https://www.linkbox.to/a/f/B4ICsHi?d=true" },
+        { name: " Firebreak (2026)", img: "https://i.ibb.co/5ft2NzJ/Firebreak-2026.jpg", link: "https://www.linkbox.to/a/f/bKyuRm5?d=true" },
+        { name: " Return to Silent Hill (2026)رعب", img: "https://i.ibb.co/hw53Xxk/Return-to-Silent-Hill-2026.jpg", link: "https://www.linkbox.to/a/f/nLQh8Tk?d=true" },
+        { name: " Siccin 8 (2025)سجين رعب ", img: "https://i.ibb.co/78ZWFqq/Siccin-8-2025.jpg", link: "https://www.linkbox.to/a/f/PPGnaeU?d=true" },
+        { name: "The Shrinking Man (2025)", img: "https://i.ibb.co/jv3f8rvq/The-Shrinking-Man-2025.jpg", link: "https://www.linkbox.to/a/f/hCrF4KH?d=true" },
+        { name: "Cold Storage (2026)ليام نيسون", img: "https://i.ibb.co/LdHD59qQ/Cold-Storage-2026.jpg", link: "https://www.linkbox.to/a/f/KfyixiM?d=true" },
+        { name: " Greenland 2 Migration (2026)جيرارد بتلر", img: "https://i.ibb.co/pBqLzMVM/Greenland-2-Migration-2026.jpg", link: "https://www.linkbox.to/a/f/5y3mtsW?d=true" },
+        { name: "Anaconda (2025)جاك بلاك افعى اناكوندا", img: "https://i.ibb.co/Y4Xc16cs/Anaconda-2025.jpg", link: "https://www.linkbox.to/a/f/6TLB0uB?d=true" },
+        { name: "The Hunt For Planet B (2021)وثائقي", img: "https://i.ibb.co/jkF5NTFQ/The-Hunt-For-Planet-B-2021.jpg", link: "https://www.linkbox.to/a/f/nMVE8if?d=true" },
+        { name: "Secret Space UFOs Rise of the TR3B (2021)وثائقي", img: "https://i.ibb.co/whgXnZvy/Secret-Space-UFOs-Rise-of-the-TR3-B-2021.jpg", link: "https://www.linkbox.to/a/f/vBPxysB?d=true" },
+        { name: "Earth Emergency (2021)وثائقي ", img: "https://i.ibb.co/hRQdVH6K/Earth-Emergency-2021.jpg", link: "https://www.linkbox.to/a/f/4chYLK7?d=true" },
+        { name: "ABI مسلسل تركي كنان إميرزالي اوغلو 2026", img: "https://i.ibb.co/mVFLJQsB/ABI-2026.jpg", link: "https://eshaqtv.github.io/ABI/" },
+        { name: "Predator Badlands (2025) ", img: "https://i.ibb.co/3V19j03/Predator-Badlands-2025.jpg", link: "https://www.linkbox.to/a/f/2piMXnY?d=true" },
+        { name: "The Long Walk (2025) ", img: "https://i.ibb.co/Kjz3LN0Q/The-Long-Walk-2025.jpg", link: "https://www.linkbox.zone/a/f/27X4EMq?d=true" },
+        { name: " Beast of War (2025) ", img: "https://i.ibb.co/VcfTFmv3/Beast-of-War-2025.jpg", link: "https://www.linkbox.zone/a/f/aCNtxfg?d=true" },
+        { name: " Descendent (2025)", img: "https://i.ibb.co/27FB3VMz/Descendent-2025.jpg", link: "https://www.linkbox.zone/a/f/l5AWXsH?d=true" },
+        { name: " Mahavatar Narsimha (2025)", img: "https://i.ibb.co/JWTf8b9y/Mahavatar-Narsimha-2025.jpg", link: "https://www.linkbox.zone/a/f/rTy8V2B?d=true" },
+        { name: "The Woman in Cabin 10 (2025)كيرا نايتلي ", img: "https://i.ibb.co/9Hytsfwc/The-Woman-in-Cabin-10-2025.jpg", link: "https://www.linkbox.to/a/f/JIxM3t5?d=true" },
+        { name: "She Rides Shotgun (2025)", img: "https://i.ibb.co/qFx6gVQk/She-Rides-Shotgun-2025.jpg", link: "https://www.linkbox.to/a/f/0GMVbDE?d=true" },
+        { name: " Play Dirty (2025)مارك والبيرغ", img: "https://i.ibb.co/gMbDy4rb/Play-Dirty-2025.jpg", link: "https://www.linkbox.to/a/f/DVQD3cB?d=true" },
+        { name: "The Conjuring Last Rites (2025) رعب الشعوذة", img: "https://i.ibb.co/k21dPTGs/The-Conjuring-Last-Rites-2025.jpg", link: "https://www.linkbox.to/a/f/FjPLrWd?d=true" },
+        { name: "Superman (2025)سوبر مان", img: "https://i.ibb.co/cdYrbRh/Superman-2025.jpg", link: "https://www.linkbox.to/a/f/NRqIb09?d=true" },
+        { name: "Night Always Comes (2025)فانيسا كيربي", img: "https://i.ibb.co/gZyxNwL8/Night-Always-Comes-2025.jpg", link: "https://www.linkbox.to/a/f/AA9o1Tt?d=true" },
+        { name: " Unknown Number The High School Catfish (2025)", img: "https://i.ibb.co/BkfcdCv/Unknown-Number-The-High-School-Catfish-2025.jpg", link: "https://www.linkbox.to/a/f/VdE0Wqv?d=true" },
+        { name: "The Thursday Murder Club (2025)بيرس بروسنان", img: "https://i.ibb.co/wFLF8Cq2/The-Thursday-Murder-Club-2025.jpg", link: "https://www.linkbox.to/a/f/oP2Sc23?d=true" },
+        { name: " Sketch (2025)", img: "https://i.ibb.co/xtxPgvJF/Sketch-2025.jpg", link: "https://www.linkbox.to/a/f/X2x514d?d=true" },
+        { name: " Weapons (2025)رعب", img: "https://i.ibb.co/0pF6TYJR/Weapons-2025.jpg", link: "https://www.linkbox.to/a/f/Mi8NFr3?d=true" },
+        { name: "Nobody 2 (2025) ", img: "https://i.ibb.co/RTDRD8Mp/Nobody-2-2025.jpg", link: "https://www.linkbox.to/a/f/LMkKUbH?d=true" },
+        { name: "The Naked Gun (2025)ليام نيسون ", img: "https://i.ibb.co/JjHqpvq6/The-Naked-Gun-2025.jpg", link: "https://www.linkbox.to/a/f/Ec7gvpm?d=true" },
+        { name: "Highest 2 Lowest (2025)دنزل واشنطن", img: "https://i.ibb.co/zTykk676/Highest-2-Lowest-2025.jpg", link: "https://www.linkbox.to/a/f/3in6lsA?d=true" },
+        { name: "F1 The Movie (2025)براد بيت ", img: "https://i.ibb.co/r2v0ychN/F1-The-Movie-2025.jpg", link: "https://www.linkbox.to/a/f/LmKocKW?d=true" },
+        { name: " Mission Impossible The Final Reckoning (2025)توم كروز", img: "https://i.ibb.co/9mk3kckF/Mission-Impossible-The-Final-Reckoning-2025.jpg", link: "https://www.linkbox.to/a/f/K3KalYo?d=true" },
+        { name: " The Amateur (2025)لورنس فيشبورن", img: "https://i.ibb.co/gZ4VYhBJ/The-Amateur-2025.jpg", link: "https://www.linkbox.to/a/f/GiCjfiN?d=true" },
+        { name: "Ice Road Vengeance (2025)ليام نيسون", img: "https://i.ibb.co/ymM2jRrX/Ice-Road-Vengeance-2025.jpg", link: "https://www.linkbox.to/a/f/suFyxQZ?d=true" },
+        { name: "Ballerina (2025)كيانو ريفز", img: "https://i.ibb.co/kgGzdL34/Ballerina-2025.jpg", link: "https://www.linkbox.to/a/f/TYmGYgV?d=true" },
+        { name: "Final Destination Bloodlines (2025)رعب ", img: "https://i.ibb.co/21q3HHvL/Final-Destination-Bloodlines-2025.jpg", link: "https://www.linkbox.to/a/f/84rnOm0?d=true" },
+        { name: "Echo Valley (2025)", img: "https://i.ibb.co/63bxtsM/Echo-Valley-2025.jpg", link: "https://www.linkbox.to/a/f/6c2fLL5?d=true" },
+        { name: " Deep Cover (2025)", img: "https://i.ibb.co/Mxkr63vc/Deep-Cover-2025.jpg", link: "https://www.linkbox.to/a/f/FxsqVFO?d=true" },
+        { name: "The Surfer (2025)نيكولاس كيج", img: "https://i.ibb.co/twzSkVK6/The-Surfer-2025.jpg", link: "https://www.linkbox.to/a/f/j4c82i3?d=true" },
+        { name: " Nocturnal (2025)", img: "https://i.ibb.co/B5mQmSfs/Nocturnal-2025.jpg", link: "https://www.linkbox.to/a/f/uHkrTvB?d=true" },
+        { name: " The Legend of Ochi (2025)مغامرة عائلي", img: "https://i.ibb.co/qLyg95WH/The-Legend-of-Ochi-2025.jpg", link: "https://www.linkbox.to/a/f/jenJ1yP?d=true" },
+        { name: " Fountain of Youth (2025)", img: "https://i.ibb.co/TBbZTqjd/Fountain-of-Youth-2025.jpg", link: "https://www.linkbox.to/a/f/E4UXfVh?d=true" },
+        { name: "Last Bullet 3 (2025) ", img: "https://i.ibb.co/ksKsLF9j/Last-Bullet-3-2025.jpg", link: "https://www.linkbox.to/a/f/uGHL627?d=true" },
+        { name: "Until Dawn (2025)رعب ", img: "https://i.ibb.co/cKLyQt5Q/Until-Dawn-2025.jpg", link: "https://www.linkbox.to/a/f/ypt6PuE?d=true" },
+        { name: "Broke (2025)", img: "https://i.ibb.co/xq2x6hFJ/Broke-2025.jpg", link: "https://www.linkbox.to/a/f/bxeZuGH?d=true" },
+        { name: "Snow White (2025)غال غادوت", img: "https://i.ibb.co/vvx6zKTy/Snow-White-2025.jpg", link: "https://www.linkbox.to/a/f/VdnZVYZ?d=true" },
+        { name: " My Penguin Friend (2024)جان رينو", img: "https://i.ibb.co/1fJfvRYY/My-Penguin-Friend-2024.jpg", link: "https://www.linkbox.to/a/f/Wl8nI06?d=true" },
+        { name: "Black Bag (2025)بيرس بروسنان ", img: "https://i.ibb.co/9jQ2NLy/Black-Bag-2025.jpg", link: "https://www.linkbox.to/a/f/osomcqv?d=true" },
+        { name: " Mickey 17 (2025)", img: "https://i.ibb.co/6SXTmtc/Mickey-17-2025.jpg", link: "https://www.linkbox.to/a/f/rBnRwFc?d=true" },
+        { name: "The Soul Eater (2024)رعب ", img: "https://i.ibb.co/k2jxHRh5/The-Soul-Eater-2024.jpg", link: "https://www.linkbox.to/a/f/iCeujZn?d=true" },
+        { name: "The Woman in the Yard (2025)رعب ", img: "https://i.ibb.co/4g32NVqK/The-Woman-in-the-Yard-2025.jpg", link: "https://www.linkbox.to/a/f/8o7fSOQ?d=true" },
+        { name: "Flight Risk (2024)مارك والبيرغ ", img: "https://i.ibb.co/chs38TCN/Flight-Risk-2024.jpg", link: "https://www.linkbox.to/a/f/lp1Lg3F?d=true" },
+        { name: "Wolf Man (2025)رعب ", img: "https://i.ibb.co/0yVybpmJ/Wolf-Man-2025.jpg", link: "https://www.linkbox.to/a/f/P8U3zL2?d=true" },
+        { name: "Henry Danger The Movie (2025)", img: "https://i.ibb.co/fGT2DvBr/Henry-Danger-The-Movie-2025.jpg", link: "https://www.linkbox.to/a/f/OKqzHZD?d=true" },
+        { name: "Paddington in Peru (2024) مغامرة عائلي  ", img: "https://i.ibb.co/j9x63bjm/Paddington-in-Peru-2024.jpg", link: "https://www.linkbox.to/a/f/wyesPUz?d=true" },
+        { name: "Mufasa The Lion King (2024)انميشن عائلي", img: "https://i.ibb.co/pj2fyB0F/Mufasa-The-Lion-King-2024.jpg", link: "https://www.linkbox.to/a/f/VOUzqJO?d=true" },
+        { name: " A Real Pain (2024)", img: "https://i.ibb.co/5gkSCzQs/A-Real-Pain-2024.jpg", link: "https://www.linkbox.to/a/f/CTyTneo?d=true" },
+        { name: "Cunk on Life (2024)", img: "https://i.ibb.co/6RrNXRD2/Cunk-on-Life-2024.jpg", link: "https://www.linkbox.to/a/f/zCZ5eLz?d=true" },
+        { name: " How to Make Millions Before Grandma Dies (2024)", img: "https://i.ibb.co/KpxYRVZf/How-to-Make-Millions-Before-Grandma-Dies-2024.jpg", link: "https://www.linkbox.to/a/f/ehMB1mK?d=true" },
+        { name: "Young Werther (2024)", img: "https://i.ibb.co/qMgDVy3R/Young-Werther-2024.jpg", link: "https://www.linkbox.to/a/f/6rQcxtQ?d=true" },
+        { name: "Bonhoeffer Pastor Spy Assassin (2024)", img: "https://i.ibb.co/M5NvFmzF/Bonhoeffer-Pastor-Spy-Assassin-2024.jpg", link: "https://www.linkbox.to/a/f/ZfN07et?d=true" },
+        { name: "Back in Action (2025)", img: "https://i.ibb.co/6cgLvV0F/Back-in-Action-2025.jpg", link: "https://www.linkbox.to/a/f/tifzICq?d=true" },
+        { name: "I Am Celine Dion (2024) وثائقي ", img: "https://i.ibb.co/BmDfCfC/I-Am-Celine-Dion-2024.jpg", link: "https://www.linkbox.to/a/f/brjmhAT?d=true" },
+        { name: "Nr. 24 (2024)", img: "https://i.ibb.co/nqKbzf1T/Nr-24-2024.jpg", link: "https://www.linkbox.to/a/f/j5wD4FF?d=true" },
+        { name: " Reagan (2024)دينيس كويد", img: "https://i.ibb.co/b56ZGdfn/Reagan-2024.jpg", link: "https://www.linkbox.to/a/f/H6YfozH?d=true" },
+        { name: "Singham Again (2024) هندي", img: "https://i.ibb.co/dJ53wsDx/Singham-Again-2024.jpg", link: "https://www.linkbox.to/a/f/cDw6zu6?d=true" },
+        { name: " Wallace & Gromit Vengeance Most Fowl (2024) انميشن", img: "https://i.ibb.co/ccQqGKzZ/Wallace-Gromit-Vengeance-Most-Fowl-2024.jpg", link: "https://www.linkbox.to/a/f/dZLiWJY?d=true" },
+        { name: "The Lord of the Rings The War of the Rohirrim (2024) انميشن ", img: "https://i.ibb.co/k2LyYRJR/The-Lord-of-the-Rings-The-War-of-the-Rohirrim-2024.jpg", link: "https://www.linkbox.to/a/f/93Hx6ou?d=true" },
+        { name: "Blitz (2024) ", img: "https://i.ibb.co/C7qP7rt/Blitz-2024.jpg", link: "https://www.linkbox.to/a/f/CIHuV3a?d=true" },
+        { name: " Spellbound (2024) انميشن", img: "https://i.ibb.co/SrF8hZr/Spellbound-2024.jpg", link: "https://www.linkbox.to/a/f/rkNsPzw?d=true" },
+        { name: "Watchmen Chapter II (2024) انميشن ", img: "https://i.ibb.co/CB07V2Y/Watchmen-Chapter-II-2024.jpg", link: "https://www.linkbox.to/a/f/YBvVbhN?d=true" },
+        { name: "Wicked (2024)", img: "https://i.ibb.co/2PZBhQX/Wicked-2024.jpg", link: "https://www.linkbox.to/a/f/IfBatJP?d=true" },
+        { name: " Panda Plan (2024) جاكي شان", img: "https://i.ibb.co/BcmXt2Z/Panda-Plan-2024.jpg", link: "https://www.linkbox.to/a/f/xe3DStF?d=true" },
+        { name: "Red One (2024) دوين جونسون", img: "https://i.ibb.co/7pn1LxQ/Red-One-2024.jpg", link: "https://www.linkbox.to/a/f/d8YfH3Y?d=true" },
+        { name: "The Price of Money A Largo Winch Adventure (2024)جيمس فرانكو", img: "https://i.ibb.co/jVm53pJ/The-Price-of-Money-A-Largo-Winch-Adventure-2024.jpg", link: "https://www.linkbox.to/a/f/mcPX8vf?d=true" },
+        { name: " The Return (2024)", img: "https://i.ibb.co/BzBRHm7/The-Return-2024.jpg", link: "https://www.linkbox.to/a/f/JJqJpvs?d=true" },
+        { name: "Gladiator II (2024) المصارع دنزل واشنطن", img: "https://i.ibb.co/KW6NTbp/Gladiator-II-2024.jpg", link: "https://www.linkbox.to/a/f/bqzhSD1?d=true" },
+        { name: "Dirty Angels (2024)ايفا جرين", img: "https://i.ibb.co/b3mbWss/Dirty-Angels-2024.jpg", link: "https://www.linkbox.to/a/f/xq3YMLz?d=true" },
+        { name: "Small Things Like These (2024)كيليان مورفي ", img: "https://i.ibb.co/XycqzNc/Small-Things-Like-These-2024.jpg", link: "https://www.linkbox.to/a/f/Rpjh744?d=true" },
+        { name: "Carry On (2024)", img: "https://i.ibb.co/w0qszF5/Carry-On-2024.jpg", link: "https://www.linkbox.to/a/f/lVEpbdZ?d=true" },
+        { name: "Courage Under Fire (1996) دنزل واشنطن", img: "https://i.ibb.co/hfXf4TF/Courage-Under-Fire-1996.jpg", link: "https://www.linkbox.to/a/f/GnReojN?d=true" },
+        { name: " Heretic (2024) رعب", img: "https://i.ibb.co/nzhJFqx/Heretic-2024.jpg", link: "https://www.linkbox.to/a/f/MVx7qRP?d=true" },
+        { name: "Venom The Last Dance (2024) فينوم توم هاردي", img: "https://i.ibb.co/W5fbyxf/Venom-The-Last-Dance-2024.jpg", link: "https://www.linkbox.to/a/f/3yfe8tW?d=true" },
+        { name: " Siccin 7 (2024) رعب", img: "https://i.ibb.co/j36DBkd/Sijjin-7-2024.jpg", link: "https://www.linkbox.to/a/f/z0LH3w1?d=true" },
+        { name: " Absolution (2024)ليام نيسون", img: "https://i.ibb.co/kGMFtM8/Absolution-2024.jpg", link: "https://www.linkbox.to/a/f/eM1qAKi?d=true" },
+        { name: " Armor (2024)سيلفستر ستالون", img: "https://i.ibb.co/bsHV8BF/Armor-2024.jpg", link: "https://www.linkbox.to/a/f/zGzW65w?d=true" },
+        { name: "Joker Folie a Deux (2024) جوكر خواكين فينيكس", img: "https://i.ibb.co/PzTqfQ9/Joker-Folie-a-Deux-2024.jpg", link: "https://www.linkbox.to/a/f/aFe2MPm?d=true" },
+        { name: " Smile 2 (2024) رعب", img: "https://i.ibb.co/wR3R2VC/Smile-2-2024.jpg", link: "https://www.linkbox.to/a/f/AQOKqg3?d=true" },
+        { name: "Mary (2024) انتوني هوبكنز", img: "https://i.ibb.co/L1rrq7N/Mary-2024.jpg", link: "https://www.linkbox.to/a/f/JL9XBW6?d=true" },
+        { name: "Here (2024) توم هانكس", img: "https://i.ibb.co/W0H6cb2/Here-2024.jpg", link: "https://www.linkbox.to/a/f/Q4xxvyu?d=true" },
+        { name: " Believer (2024) رعب", img: "https://i.ibb.co/cryYfV2/Believer-2024.jpg", link: "https://www.linkbox.to/a/f/IbToTai?d=true" },
+        { name: "The Foreigner (2017) جاكي شان", img: "https://i.ibb.co/8NYRQnH/The-Foreigner-2017.jpg", link: "https://www.linkbox.to/a/f/47XMz8L?d=true" },
+        { name: "The Forge (2024) عائلي ", img: "https://i.ibb.co/42GvJnS/The-Forge-2024.jpg", link: "https://www.linkbox.to/a/f/6DkUczW?d=true" }
+    ];
+
+    const extraAnime = [
+{ name: "The Unlikely Pilgrimage of Harold Fry (2023)", img: "https://i.ibb.co/LRfWBHT/The-Unlikely-Pilgrimage-of-Harold-Fry-2023.jpg", link: "https://www.linkbox.to/a/f/0TmhSDg?d=true" },
+{ name: "To Kill a Stepfather (2023)", img: "https://i.ibb.co/16vHWyv/To-Kill-a-Stepfather-2023.jpg", link: "https://www.linkbox.to/a/f/qKOJKC8?d=true" },
+{ name: "Viraata Parvam (2022) هندي", img: "https://i.ibb.co/KNg5Wzy/Viraata-Parvam-2022.jpg", link: "https://www.linkbox.to/a/f/KEtWRk7?d=true" },
+{ name: "Hellboy The Crooked Man (2024)", img: "https://i.ibb.co/3zvXdnF/Hellboy-The-Crooked-Man-2024.jpg", link: "https://www.linkbox.to/a/f/vuCq4mx?d=true" },
+{ name: "Salem s Lot (2024) رعب", img: "https://i.ibb.co/DYKNRj0/Salem-s-Lot-2024.jpg", link: "https://www.linkbox.to/a/f/Htce4cr?d=true" },
+{ name: "Wolfs (2024) جورج كلوني براد بيت", img: "https://i.ibb.co/KDxZ8KK/Wolfs-2024.jpg", link: "https://www.linkbox.to/a/f/GdavPRE?d=true" },
+{ name: "To The North (2022)", img: "https://i.ibb.co/K53wmmd/To-The-North-2022.jpg", link: "https://www.linkbox.to/a/f/kv8Ftpd?d=true" },
+{ name: "افلام", img: "https://www8.0zz0.com/2022/04/22/13/564305132.jpg", link: "go:FILMS" },
+{ name: "افلام", img: "https://www8.0zz0.com/2022/04/22/13/564305132.jpg", link: "go:FILMS" },
+{ name: "افلام", img: "https://www8.0zz0.com/2022/04/22/13/564305132.jpg", link: "go:FILMS" },
+{ name: "افلام", img: "https://www8.0zz0.com/2022/04/22/13/564305132.jpg", link: "go:FILMS" },
+{ name: "افلام", img: "https://www8.0zz0.com/2022/04/22/13/564305132.jpg", link: "go:FILMS" },
+{ name: "افلام", img: "https://www8.0zz0.com/2022/04/22/13/564305132.jpg", link: "go:FILMS" },
+{ name: "افلام", img: "https://www8.0zz0.com/2022/04/22/13/564305132.jpg", link: "go:FILMS" },
+
+
+
+];
+   
+    
+    
+    const allAnime = [...animeItems, ...extraAnime];
+
+    // عناصر DOM
+    const searchInputElem = document.getElementById('searchInput');
+    const gridContainer = document.getElementById('animeGridContainer');
+    const homeLink = document.getElementById('homeLink');
+
+    // تعطيل استعادة التمرير التلقائي من المتصفح للتحكم اليدوي
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
+    // حفظ واسترجاع موضع التمرير
+    function saveScrollPosition() {
+        const scrollY = window.scrollY;
+        sessionStorage.setItem('animeScrollPos', scrollY);
+    }
+
+    function restoreScrollPosition() {
+        const savedPos = sessionStorage.getItem('animeScrollPos');
+        if (savedPos !== null && !isNaN(parseInt(savedPos))) {
+            window.scrollTo(0, parseInt(savedPos));
+            sessionStorage.removeItem('animeScrollPos');
+        }
+    }
+
+    // حفظ الموضع قبل مغادرة الصفحة (لأي سبب)
+    window.addEventListener('beforeunload', () => {
+        saveScrollPosition();
+    });
+
+    // حفظ الموضع عند النقر على الأنمي (لضمان الدقة)
+    function attachCardListeners() {
+        document.querySelectorAll('.anime-card').forEach(card => {
+            card.removeEventListener('click', handleCardClick);
+            card.addEventListener('click', handleCardClick);
+        });
+    }
+
+    function handleCardClick(e) {
+        const link = this.getAttribute('data-link');
+        if (link) {
+            saveScrollPosition();   // حفظ الموضع الحالي بدقة
+            window.open(link);
+        }
+    }
+
+    function renderCards(filter = '') {
+        const filtered = allAnime.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()));
+        if (!gridContainer) return;
+        if (filtered.length === 0) {
+            gridContainer.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px;">⚠️ لا توجد نتائج مطابقة لـ "${filter}"</div>`;
+            return;
+        }
+        let html = '';
+        filtered.forEach(anime => {
+            html += `
+                <div class="anime-card" data-link="${anime.link}" data-name="${anime.name}">
+                    <div class="card-img">
+                        <img src="${anime.img}" alt="${anime.name}" loading="lazy" onerror="this.src='https://placehold.co/400x520?text=No+Image'">
+                        <div class="play-hint"><i class="fas fa-play"></i> تشغيل</div>
+                    </div>
+                    <div class="card-info">
+                        <h3>${anime.name}</h3>
+                        <div class="badge"><i class="fas fa-tv"></i> Free</div>
+                    </div>
+                </div>
+            `;
+        });
+        gridContainer.innerHTML = html;
+        attachCardListeners();
+    }
+
+    // النقر على عنوان "قائمة الأنمي" يفتح go:home
+    if (homeLink) {
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open('https://play.google.com/store/apps/details?id=com.linkbox.plus.android&hl=ar');
+        });
+    }
+
+    if (searchInputElem) {
+        searchInputElem.addEventListener('input', (e) => renderCards(e.target.value));
+    }
+
+    // عند تحميل الصفحة: عرض البطاقات واستعادة الموضع
+    window.addEventListener('load', () => {
+        renderCards('');
+        restoreScrollPosition();
+    });
+
+    // عند العودة من الصفحة عبر bfcache (مثل الرجوع من الرابط)
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            restoreScrollPosition();
+        }
+    });
+</script>
+</body>
+</html>
